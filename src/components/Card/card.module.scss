@@ -1,0 +1,42 @@
+.card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 420px;
+	height: 600px;
+	border-radius: 30px;
+	background-color: rgb(245, 80, 46);
+	color: white;
+
+	.type {
+		padding: 16px 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.picture {
+		img {
+			width: 400px;
+			height: 277px;
+		}
+	}
+
+	.name {
+		padding: 16px 0;
+	}
+
+	cost {
+		padding: 16px 0;
+	}
+
+	.description {
+		padding: 16px 16px;
+		text-align: center;
+	}
+
+	.button {
+		margin-top: auto;
+		padding: 16px 0;
+	}
+}

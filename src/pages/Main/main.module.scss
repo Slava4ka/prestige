@@ -1,0 +1,26 @@
+.face {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	.label {
+		margin-top: 10%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+
+		h1 {
+			font-size: 3.5rem;
+			color: #5E5C61;
+		}
+	}
+
+	.dropzone {
+		display: flex;
+		width: 100%;
+		margin-top: 8%;
+	}
+}
