@@ -3,7 +3,8 @@ import {useDropzone} from 'react-dropzone';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import axios from 'axios';
-import {CircularProgress} from '@material-ui/core';
+import {CircularProgress, Tooltip} from '@material-ui/core';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import styles from './dropzone.module.scss';
 import GoogleIcon from '../Icons/GoogleIcon';
 import DropboxIcon from '../Icons/DropboxIcon';
@@ -93,47 +94,62 @@ const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 									}
 									{
 										loading ? <CircularProgress className={styles.loader} /> : (
-											<IconButton
-												aria-label="send_file"
-												onClick={(e) => {
-													e.stopPropagation();
-													console.log(files);
-													const formData = new FormData();
-													formData.append('file', files[0]);
-													setLoading(true);
-													try {
-														axios.post(
-															'http://18.218.111.236:8000',
-															formData,
-															{
-																responseType: 'json',
-																onUploadProgress: (progressEvent) => {
-																	setProgress(toPercent(progressEvent));
-																},
-															},
-														).then((response) => {
-															console.log(response);
-															setRespData(response.data);
-														}).catch((error) => {
-															console.log(error);
-															if (error.response.status === 500) {
-																alert('Возникла внутренняя ошибка сервера! '
+											<>
+												<Tooltip title="Отправить" aria-label="send" arrow>
+													<IconButton
+														aria-label="send_file"
+														onClick={(e) => {
+															e.stopPropagation();
+															console.log(files);
+															const formData = new FormData();
+															formData.append('file', files[0]);
+															setLoading(true);
+															try {
+																axios.post(
+																	'http://18.218.111.236:8000',
+																	formData,
+																	{
+																		responseType: 'json',
+																		onUploadProgress: (progressEvent) => {
+																			setProgress(toPercent(progressEvent));
+																		},
+																	},
+																).then((response) => {
+																	console.log(response);
+																	setRespData(response.data);
+																}).catch((error) => {
+																	console.log(error);
+																	if (error.response.status === 500) {
+																		alert('Возникла внутренняя ошибка сервера! '
 																	+ 'Свяжитесь с администратором');
-															} else {
+																	} else {
+																		alert(error);
+																	}
+																}).finally(() => {
+																	setLoading(false);
+																	setProgress(0);
+																});
+															} catch (error) {
 																alert(error);
+																console.log(error);
 															}
-														}).finally(() => {
-															setLoading(false);
-															setProgress(0);
-														});
-													} catch (error) {
-														alert(error);
-														console.log(error);
-													}
-												}}
-											>
-												<SendIcon />
-											</IconButton>
+														}}
+													>
+														<SendIcon />
+													</IconButton>
+												</Tooltip>
+												<Tooltip title="Очистить" aria-label="clear" arrow>
+													<IconButton
+														aria-label="send_file"
+														onClick={(e) => {
+															e.stopPropagation();
+															setFiles([]);
+														}}
+													>
+														<DeleteForeverIcon />
+													</IconButton>
+												</Tooltip>
+											</>
 										)
 									}
 								</div>
@@ -143,12 +159,12 @@ const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 				</div>
 			</div>
 			<div className={styles.buttons_group}>
-				<div className={styles.round_buttons}>
+				<IconButton className={styles.round_buttons}>
 					<DropboxIcon />
-				</div>
-				<div className={styles.round_buttons}>
+				</IconButton>
+				<IconButton className={styles.round_buttons}>
 					<GoogleIcon />
-				</div>
+				</IconButton>
 			</div>
 		</div>
 	);
