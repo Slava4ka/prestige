@@ -7,6 +7,7 @@ import {CircularProgress} from '@material-ui/core';
 import styles from './dropzone.module.scss';
 import GoogleIcon from '../Icons/GoogleIcon';
 import DropboxIcon from '../Icons/DropboxIcon';
+import Progress from '../Progress/Progress';
 
 const baseStyle: {[key: string]: any} = {
 	flex: 1,
@@ -36,6 +37,10 @@ const rejectStyle = {
 	backgroundColor: '#ff1744',
 };
 
+const toPercent = (progressEvent: ProgressEvent): number => (
+	Math.round((progressEvent.loaded * 100) / progressEvent.total)
+);
+
 interface ICustomDropzone {
 	setRespData: (data: string[]) => void;
 }
@@ -43,6 +48,7 @@ interface ICustomDropzone {
 const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 	const [files, setFiles] = useState<any[]>([]);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [progress, setProgress] = useState(0);
 
 	const {
 		getRootProps,
@@ -80,7 +86,11 @@ const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 						files.length > 0
 							? (
 								<div className={styles.fileLayout}>
-									<h2>{files[0].name}</h2>
+									{
+										loading
+											? <Progress progress={progress} />
+											: <h2>{files[0].name}</h2>
+									}
 									{
 										loading ? <CircularProgress className={styles.loader} /> : (
 											<IconButton
@@ -91,26 +101,35 @@ const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 													const formData = new FormData();
 													formData.append('file', files[0]);
 													setLoading(true);
-													axios.post(
-														'http://3.22.250.145:8000',
-														formData,
-														{
-															responseType: 'json',
-														},
-													).then((response) => {
-														console.log(response);
-														setRespData(response.data);
-													}).catch((error) => {
+													try {
+														axios.post(
+															'http://18.218.111.236:8000',
+															formData,
+															{
+																responseType: 'json',
+																onUploadProgress: (progressEvent) => {
+																	setProgress(toPercent(progressEvent));
+																},
+															},
+														).then((response) => {
+															console.log(response);
+															setRespData(response.data);
+														}).catch((error) => {
+															console.log(error);
+															if (error.response.status === 500) {
+																alert('Возникла внутренняя ошибка сервера! '
+																	+ 'Свяжитесь с администратором');
+															} else {
+																alert(error);
+															}
+														}).finally(() => {
+															setLoading(false);
+															setProgress(0);
+														});
+													} catch (error) {
+														alert(error);
 														console.log(error);
-														if (error.response.status === 500) {
-															alert('Возникла внутренняя ошибка сервера! '
-																+ 'Свяжитесь с администратором');
-														} else {
-															alert(error);
-														}
-													}).finally(() => {
-														setLoading(false);
-													});
+													}
 												}}
 											>
 												<SendIcon />
