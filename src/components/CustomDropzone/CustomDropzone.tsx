@@ -3,6 +3,7 @@ import {useDropzone} from 'react-dropzone';
 import IconButton from '@material-ui/core/IconButton';
 import SendIcon from '@material-ui/icons/Send';
 import axios from 'axios';
+import {CircularProgress} from '@material-ui/core';
 import styles from './dropzone.module.scss';
 import GoogleIcon from '../Icons/GoogleIcon';
 import DropboxIcon from '../Icons/DropboxIcon';
@@ -35,8 +36,14 @@ const rejectStyle = {
 	backgroundColor: '#ff1744',
 };
 
-const CustomDropzone = () => {
+interface ICustomDropzone {
+	setRespData: (data: string[]) => void;
+}
+
+const CustomDropzone = ({setRespData}: ICustomDropzone) => {
 	const [files, setFiles] = useState<any[]>([]);
+	const [loading, setLoading] = useState<boolean>(false);
+
 	const {
 		getRootProps,
 		getInputProps,
@@ -51,6 +58,7 @@ const CustomDropzone = () => {
 				preview: URL.createObjectURL(file),
 			})));
 		},
+		disabled: loading,
 	});
 
 	const style = useMemo(() => ({
@@ -67,35 +75,53 @@ const CustomDropzone = () => {
 		<div className="container" style={{display: 'flex'}}>
 			<div {...getRootProps({style})} className={styles.zone}>
 				<input {...getInputProps()} />
-				{
-					files.length > 0
-						? (
-							<div className={styles.fileLayout}>
-								<h2>{files[0].name}</h2>
-								<IconButton
-									aria-label="send_file"
-									onClick={(e) => {
-										e.stopPropagation();
-										console.log(files);
-										const formData = new FormData();
-										formData.append('file', files[0]);
-
-										axios.post(
-											'http://3.22.250.145:8000',
-											formData,
-											{
-												responseType: 'json',
-											},
-										).then((response) => console.log(response))
-											.catch((error) => console.log(error));
-									}}
-								>
-									<SendIcon />
-								</IconButton>
-							</div>
-						)
-						: <h2>Выберете IFC файл или перетащите его сюда </h2>
-				}
+				<div className={styles.label}>
+					{
+						files.length > 0
+							? (
+								<div className={styles.fileLayout}>
+									<h2>{files[0].name}</h2>
+									{
+										loading ? <CircularProgress className={styles.loader} /> : (
+											<IconButton
+												aria-label="send_file"
+												onClick={(e) => {
+													e.stopPropagation();
+													console.log(files);
+													const formData = new FormData();
+													formData.append('file', files[0]);
+													setLoading(true);
+													axios.post(
+														'http://3.22.250.145:8000',
+														formData,
+														{
+															responseType: 'json',
+														},
+													).then((response) => {
+														console.log(response);
+														setRespData(response.data);
+													}).catch((error) => {
+														console.log(error);
+														if (error.response.status === 500) {
+															alert('Возникла внутренняя ошибка сервера! '
+																+ 'Свяжитесь с администратором');
+														} else {
+															alert(error);
+														}
+													}).finally(() => {
+														setLoading(false);
+													});
+												}}
+											>
+												<SendIcon />
+											</IconButton>
+										)
+									}
+								</div>
+							)
+							: <h2>Выберете IFC файл или перетащите его сюда </h2>
+					}
+				</div>
 			</div>
 			<div className={styles.buttons_group}>
 				<div className={styles.round_buttons}>

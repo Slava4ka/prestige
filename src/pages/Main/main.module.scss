@@ -1,26 +1,30 @@
-.face {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
+.container {
+	margin-top: auto;
 
-	.label {
-		margin-top: 10%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		flex-direction: column;
+	.face {
+		width: 100%;
 
-		h1 {
+		.label {
+			margin-top: 24px;
+			text-align: center;
+		}
+
+		.bigLetter {
 			font-size: 3.5rem;
 			color: #5E5C61;
 		}
+
+		.dropzone {
+			margin-top: 48px;
+		}
 	}
 
-	.dropzone {
-		display: flex;
-		width: 100%;
-		margin-top: 8%;
+	.dataPaper {
+		margin: 24px 0;
+		padding: 16px;
+
+		.paragraph {
+			padding: 6px 0;
+		}
 	}
 }
