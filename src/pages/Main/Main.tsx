@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './main.module.scss';
-import Dropzone from '../../components/Dropzone/Dropzone';
+import CustomDropzone from '../../components/CustomDropzone/CustomDropzone';
 
 const Main = () => (
 	<div className={styles.face}>
@@ -12,7 +12,7 @@ const Main = () => (
 			</h2>
 
 			<div className={styles.dropzone}>
-				<Dropzone />
+				<CustomDropzone />
 			</div>
 		</div>
 	</div>
