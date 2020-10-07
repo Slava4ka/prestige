@@ -28,7 +28,14 @@ const WithHeader = (WrappedComponent: any) => () => (
 		<WrappedComponent />
 
 		<div className={`mt-auto ${styles.footer}`}>
-			<h6>© Аналитический центр устойчивого развития и и цифровой экономики ®</h6>
+			<img
+				src="/ACSDVE_logo.png"
+				width="50"
+				height="50"
+				className="d-inline-block align-top"
+				alt="logo"
+			/>
+			<h6>© Аналитический центр устойчивого развития и цифровой экономики ®</h6>
 		</div>
 	</div>
 );

@@ -12,7 +12,7 @@ const Main = () => {
 		<Container maxWidth="lg" component="main" className={styles.container}>
 			<div className={styles.face}>
 				<h1 className={`${styles.label} ${styles.bigLetter}`}>
-					Поиск несоответствий в IFC файлах нормам строительства
+					Поиск несоответствий в IFC файлах нормам строительства (демонстрационная версия)
 				</h1>
 				<h2 className={styles.label}>
 					Автоматизированный поиск несоответствий в IFC файлах нормам стройтельства с
